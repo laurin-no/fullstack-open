@@ -12,6 +12,6 @@
 | **Part 1**        | a         | 2h       |
 |                   | b         | 1h       |  
 |                   | c         | 1h       |
-|                   | d         | 1+       |
-|                   | **total** | **4h**   |
-| **Sum all parts** |           | **6h**   |  
+|                   | d         | 3h       |
+|                   | **total** | **7h**   |
+| **Sum all parts** |           | **9h**   |  
