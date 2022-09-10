@@ -6,10 +6,12 @@
 
 ## Timesheet
 
-| Part              | Chapter    | Duration |
-|-------------------|------------|----------|
-| **Part 0**        | **total**  | **2h**   |
-| **Part 1**        | a          | 2h       |
-|                   | b          | 1h       |  
-|                   | **total**  | **3h**   |
-| **Sum all parts** |            | **5h**   |  
+| Part              | Chapter   | Duration |
+|-------------------|-----------|----------|
+| **Part 0**        | **total** | **2h**   |
+| **Part 1**        | a         | 2h       |
+|                   | b         | 1h       |  
+|                   | c         | 1h       |
+|                   | d         |          |
+|                   | **total** | **4h**   |
+| **Sum all parts** |           | **6h**   |  
