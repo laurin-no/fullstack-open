@@ -21,24 +21,9 @@
       "id": 4
     },
     {
-      "name": "test",
-      "number": "123",
-      "id": 5
-    },
-    {
-      "name": "test2",
-      "number": "1234",
-      "id": 6
-    },
-    {
       "name": "first last",
       "number": "542321",
       "id": 7
-    },
-    {
-      "name": "test 123",
-      "number": "1234",
-      "id": 8
     },
     {
       "name": "test filter",
@@ -61,14 +46,29 @@
       "id": 21
     },
     {
-      "name": "test23",
-      "number": "2134",
-      "id": 22
-    },
-    {
       "name": "test2345",
       "number": "1234",
       "id": 23
+    },
+    {
+      "name": "test 0123",
+      "number": "1234",
+      "id": 24
+    },
+    {
+      "name": "first last1234",
+      "number": "1234",
+      "id": 25
+    },
+    {
+      "name": "hallo123",
+      "number": "43212",
+      "id": 26
+    },
+    {
+      "name": "hallo321",
+      "number": "1234",
+      "id": 27
     }
   ]
 }

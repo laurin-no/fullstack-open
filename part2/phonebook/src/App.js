@@ -3,6 +3,8 @@ import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import personService from './services/person'
+import Notification from './components/Notification'
+import Error from './components/Error'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -10,6 +12,8 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [personsShown, setPersonsShown] = useState([])
     const [personsFilter, setPersonsFilter] = useState('')
+    const [notificationMessage, setNotificationMessage] = useState(null)
+    const [errorMessage, setErrorMessage] = useState(null)
 
     useEffect(() => {
         personService
@@ -59,6 +63,26 @@ const App = () => {
                 personService
                     .update(existingPerson.id, reqBody)
                     .then(returnedPerson => handlePersonUpdateResponse(returnedPerson))
+                    .then(() => {
+                        setNotificationMessage(
+                            `Updated ${existingPerson.name}`
+                        )
+                        setTimeout(() => {
+                            setNotificationMessage(null)
+                        }, 4000)
+                    })
+                    .catch(error => {
+                        const cleanPersons = persons.filter(p => p.id !== existingPerson.id)
+                        setPersons(cleanPersons)
+                        setPersonsShown(filterPersons(cleanPersons, personsFilter))
+
+                        setErrorMessage(
+                            `Information of ${existingPerson.name} has already been removed from server`
+                        )
+                        setTimeout(() => {
+                            setErrorMessage(null)
+                        }, 7000)
+                    })
             }
         } else {
             const personObject = {
@@ -69,6 +93,14 @@ const App = () => {
             personService
                 .create(personObject)
                 .then(returnedPerson => handlePersonCreationResponse(returnedPerson))
+                .then(() => {
+                    setNotificationMessage(
+                        `Added ${personObject.name}`
+                    )
+                    setTimeout(() => {
+                        setNotificationMessage(null)
+                    }, 4000)
+                })
         }
     }
 
@@ -104,6 +136,8 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={notificationMessage}/>
+            <Error message={errorMessage}/>
             <Filter handleFilterChange={handleFilterChange}/>
 
             <h3>add a new</h3>

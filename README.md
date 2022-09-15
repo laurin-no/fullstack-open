@@ -18,6 +18,6 @@
 |                   | b         | 2.0h     |
 |                   | c         | 4.0h     |
 |                   | d         | 3.0h     |
-|                   | e         |          |
-|                   | **total** |          |
-| **Sum all parts** |           | **9h**   |  
+|                   | e         | 1.5h     |
+|                   | **total** | 12h      |
+| **Sum all parts** |           | **21h**  |  
