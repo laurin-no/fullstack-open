@@ -45,7 +45,7 @@
     {
       "content": "a new note...",
       "date": "2022-09-14T13:55:40.465Z",
-      "important": false,
+      "important": true,
       "id": 8
     }
   ]
