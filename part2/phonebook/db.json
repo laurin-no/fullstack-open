@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "3421",
       "id": 1
     },
     {
@@ -19,6 +19,56 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
+    },
+    {
+      "name": "test",
+      "number": "123",
+      "id": 5
+    },
+    {
+      "name": "test2",
+      "number": "1234",
+      "id": 6
+    },
+    {
+      "name": "first last",
+      "number": "542321",
+      "id": 7
+    },
+    {
+      "name": "test 123",
+      "number": "1234",
+      "id": 8
+    },
+    {
+      "name": "test filter",
+      "number": "1234",
+      "id": 9
+    },
+    {
+      "name": "test filter2",
+      "number": "43212",
+      "id": 10
+    },
+    {
+      "name": "test filter10",
+      "number": "1234",
+      "id": 18
+    },
+    {
+      "name": "test 2134",
+      "number": "1234",
+      "id": 21
+    },
+    {
+      "name": "test23",
+      "number": "2134",
+      "id": 22
+    },
+    {
+      "name": "test2345",
+      "number": "1234",
+      "id": 23
     }
   ]
 }
