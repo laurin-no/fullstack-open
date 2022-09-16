@@ -1,0 +1,1 @@
+part 3 is found in a separate repository: [laurin-no / fullstack-open-part3](https://github.com/laurin-no/fullstack-open-part3)
