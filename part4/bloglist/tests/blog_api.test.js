@@ -12,88 +12,155 @@ beforeEach(async () => {
     await Blog.insertMany(helper.initialBlogs)
 })
 
-test('all blogs are returned in JSON', async () => {
-    const res = await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+describe('requesting all blogs', () => {
+    test('returns the results in JSON', async () => {
+        const res = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
 
-    expect(res.body).toHaveLength(helper.initialBlogs.length)
-})
+        expect(res.body).toHaveLength(helper.initialBlogs.length)
+    })
 
-test('unique identifier of blog posts is named id', async () => {
-    const res = await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+    test('utilizes a field named id as the unique identifier of blog posts', async () => {
+        const res = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
 
-    res.body.forEach(b => {
-        expect(b).toHaveProperty('id')
+        res.body.forEach(b => {
+            expect(b).toHaveProperty('id')
+        })
     })
 })
 
-test('a valid blog can be added', async () => {
-    const body = {
-        title: 'Awesome linux blog',
-        author: 'Linus Torvalds',
-        url: 'https://blog.linux.org',
-        likes: 42
-    }
+describe('creation of a blog', () => {
+    test('succeeds with code 201 if a valid is added', async () => {
+        const body = {
+            title: 'Awesome linux blog',
+            author: 'Linus Torvalds',
+            url: 'https://blog.linux.org',
+            likes: 42
+        }
 
-    await api
-        .post('/api/blogs')
-        .send(body)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+        await api
+            .post('/api/blogs')
+            .send(body)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
+        const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-    expect(blogsAtEnd.map(({title, author, url, likes}) => {
-        return {title, author, url, likes}
-    })).toContainEqual(body)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+        expect(blogsAtEnd.map(({title, author, url, likes}) => {
+            return {title, author, url, likes}
+        })).toContainEqual(body)
+    })
 
+    test('sets a default value, when creating a blog entry without the likes property set', async () => {
+        const body = {
+            title: 'Awesome linux blog',
+            author: 'Linus Torvalds',
+            url: 'https://blog.linux.org'
+        }
+
+        const res = await api
+            .post('/api/blogs')
+            .send(body)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDb()
+
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+        console.log(blogsAtEnd.find(b => b.id === res.body.id))
+        expect(blogsAtEnd.find(b => b.id === res.body.id)).toHaveProperty('likes', 0)
+    })
+
+    test('an invalid blog is not added and properly rejected', async () => {
+        const body = {
+            author: 'Linus Torvalds',
+            likes: 42
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(body)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDb()
+
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
 })
 
-test('when creating a blog entry without the likes property set, a default value is set', async () => {
-    const body = {
-        title: 'Awesome linux blog',
-        author: 'Linus Torvalds',
-        url: 'https://blog.linux.org'
-    }
+describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const blogsAtBeginning = await helper.blogsInDb()
+        const blogToDelete = blogsAtBeginning[0]
 
-    const res = await api
-        .post('/api/blogs')
-        .send(body)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
 
-    const blogsAtEnd = await helper.blogsInDb()
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+        expect(blogsAtEnd.map(b => b.title)).not.toContainEqual(blogToDelete.title)
+    })
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-    console.log(blogsAtEnd.find(b => b.id === res.body.id))
-    expect(blogsAtEnd.find(b => b.id === res.body.id)).toHaveProperty('likes', 0)
+    test('does not return an error if an id is not found but in the right format', async () => {
+        const blogToDeleteId = await helper.nonExistingId()
 
+        await api
+            .delete(`/api/blogs/${blogToDeleteId}`)
+            .expect(204)
 
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+
+    test('returns status code 400 if the id is malformed and does not change data', async () => {
+        await api
+            .delete('/api/blogs/1234')
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
 })
 
-test('an invalid blog is not added and properly rejected', async () => {
-    const body = {
-        author: 'Linus Torvalds',
-        likes: 42
-    }
+describe('updating of a blog', () => {
 
-    await api
-        .post('/api/blogs')
-        .send(body)
-        .expect(400)
-        .expect('Content-Type', /application\/json/)
+    test('successfully updates the likes for a blog', async () => {
+        const blogsAtBeginning = await helper.blogsInDb()
+        const blogToUpdate = blogsAtBeginning[0]
+        const body = {likes: blogToUpdate.likes + 42}
 
-    const blogsAtEnd = await helper.blogsInDb()
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(body)
+            .expect(200)
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd
+            .map(({id, likes}) => {
+                return {id, likes}
+            })
+            .find(b => b.id === blogToUpdate.id))
+            .toEqual({id: blogToUpdate.id, likes: body.likes})
+    })
+
+    test('returns 404 if blog id is not found', async () => {
+        const blogToUpdateId = await helper.nonExistingId()
+        const body = {likes: 1337}
+
+        await api
+            .put(`/api/blogs/${blogToUpdateId}`)
+            .send(body)
+            .expect(404)
+    })
 })
-
 
 afterAll(() => {
     mongoose.connection.close()
