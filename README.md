@@ -28,6 +28,6 @@
 | **Part 4**        | a         | 4.0h     |
 |                   | b         | 4.0h     |
 |                   | c         | 1.0h     |
-|                   | d         | 3+       |
-|                   | **total** |          |
-| **Sum all parts** |           | **32h**  |
+|                   | d         | 5.0h     |
+|                   | **total** | **14h**  |
+| **Sum all parts** |           | **46h**  |
