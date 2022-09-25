@@ -6,16 +6,20 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
+    await User.insertMany(helper.initialUsers)
 })
 
 describe('requesting all blogs', () => {
     test('returns the results in JSON', async () => {
         const res = await api
             .get('/api/blogs')
+            .set('Authorization', helper.tokenArnie)
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
@@ -25,6 +29,7 @@ describe('requesting all blogs', () => {
     test('utilizes a field named id as the unique identifier of blog posts', async () => {
         const res = await api
             .get('/api/blogs')
+            .set('Authorization', helper.tokenArnie)
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
@@ -46,6 +51,7 @@ describe('creation of a blog', () => {
         await api
             .post('/api/blogs')
             .send(body)
+            .set('Authorization', helper.tokenArnie)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -55,6 +61,24 @@ describe('creation of a blog', () => {
         expect(blogsAtEnd.map(({title, author, url, likes}) => {
             return {title, author, url, likes}
         })).toContainEqual(body)
+    })
+
+    test('returns 401 unauthorized if no token is provided', async () => {
+        const body = {
+            title: 'Awesome linux blog',
+            author: 'Linus Torvalds',
+            url: 'https://blog.linux.org',
+            likes: 42
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(body)
+            .expect(401)
+
+        const blogsAtEnd = await helper.blogsInDb()
+
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
 
     test('sets a default value, when creating a blog entry without the likes property set', async () => {
@@ -67,6 +91,7 @@ describe('creation of a blog', () => {
         const res = await api
             .post('/api/blogs')
             .send(body)
+            .set('Authorization', helper.tokenArnie)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -86,6 +111,7 @@ describe('creation of a blog', () => {
         await api
             .post('/api/blogs')
             .send(body)
+            .set('Authorization', helper.tokenArnie)
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
@@ -102,6 +128,7 @@ describe('deletion of a blog', () => {
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', helper.tokenArnie)
             .expect(204)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -109,12 +136,13 @@ describe('deletion of a blog', () => {
         expect(blogsAtEnd.map(b => b.title)).not.toContainEqual(blogToDelete.title)
     })
 
-    test('does not return an error if an id is not found but in the right format', async () => {
+    test('returns 404 if an id is not found', async () => {
         const blogToDeleteId = await helper.nonExistingId()
 
         await api
             .delete(`/api/blogs/${blogToDeleteId}`)
-            .expect(204)
+            .set('Authorization', helper.tokenArnie)
+            .expect(404)
 
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
@@ -123,6 +151,7 @@ describe('deletion of a blog', () => {
     test('returns status code 400 if the id is malformed and does not change data', async () => {
         await api
             .delete('/api/blogs/1234')
+            .set('Authorization', helper.tokenArnie)
             .expect(400)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -140,6 +169,7 @@ describe('updating of a blog', () => {
         await api
             .put(`/api/blogs/${blogToUpdate.id}`)
             .send(body)
+            .set('Authorization', helper.tokenArnie)
             .expect(200)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -158,6 +188,7 @@ describe('updating of a blog', () => {
         await api
             .put(`/api/blogs/${blogToUpdateId}`)
             .send(body)
+            .set('Authorization', helper.tokenArnie)
             .expect(404)
     })
 })
