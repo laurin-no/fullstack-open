@@ -1,6 +1,6 @@
-import {useState} from 'react'
+import { useState } from 'react'
 
-const Blog = ({blog, updateBlog, deleteBlog, user}) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     const blogStyle = {
         paddingTop: 10,
         paddingLeft: 2,
@@ -10,20 +10,20 @@ const Blog = ({blog, updateBlog, deleteBlog, user}) => {
     }
 
     const [visible, setVisible] = useState(false)
-    const showWhenVisible = {display: visible ? '' : 'none'}
+    const showWhenVisible = { display: visible ? '' : 'none' }
 
     const toggleVisibility = () => {
         setVisible(!visible)
     }
 
-    const showDelete = {display: blog.user.username === user.username ? '' : 'none'}
+    const showDelete = { display: blog.user.username === user.username ? '' : 'none' }
 
 
     const handleLike = () => {
         const likes = blog.likes ? blog.likes + 1 : 1
         const user = blog.user.id
 
-        const blogReq = {...blog, likes, user}
+        const blogReq = { ...blog, likes, user }
 
         updateBlog(blogReq)
     }

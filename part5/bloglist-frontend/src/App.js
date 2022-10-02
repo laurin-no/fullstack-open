@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -37,7 +37,7 @@ const App = () => {
         event.preventDefault()
 
         try {
-            const user = await loginService.login({username, password})
+            const user = await loginService.login({ username, password })
 
             window.localStorage.setItem(
                 'loggedUser', JSON.stringify(user)
@@ -107,7 +107,7 @@ const App = () => {
                         type="text"
                         value={username}
                         name="Username"
-                        onChange={({target}) => setUsername(target.value)}
+                        onChange={({ target }) => setUsername(target.value)}
                     />
                 </div>
                 <div>
@@ -116,7 +116,7 @@ const App = () => {
                         type="password"
                         value={password}
                         name="Password"
-                        onChange={({target}) => setPassword(target.value)}
+                        onChange={({ target }) => setPassword(target.value)}
                     />
                 </div>
                 <button type="submit">login</button>
@@ -125,7 +125,7 @@ const App = () => {
     }
 
     const blogForm = () => (
-        <Toggleable buttonLabel='create new blog' ref={blogFormRef}>
+        <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog}/>
         </Toggleable>
     )

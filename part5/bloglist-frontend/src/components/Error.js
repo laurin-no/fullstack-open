@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Error = ({message}) => {
+const Error = ({ message }) => {
     const notificationStyle = {
         color: 'red',
         background: 'lightgrey',
