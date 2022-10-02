@@ -78,6 +78,19 @@ const App = () => {
         }
     }
 
+    const updateBlog = async (blogObject) => {
+        try {
+            const blogRes = await blogService.update(blogObject)
+
+            setBlogs(prevState => prevState.map(b => b.id === blogRes.id ? blogRes : b))
+        } catch (e) {
+            setErrorMessage('Blog update failed')
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 5000)
+        }
+    }
+
     const loginForm = () => {
         return (
             <form onSubmit={handleLogin}>
@@ -135,7 +148,7 @@ const App = () => {
             {blogForm()}
 
             {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog}/>
+                <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
             )}
         </div>
     )
