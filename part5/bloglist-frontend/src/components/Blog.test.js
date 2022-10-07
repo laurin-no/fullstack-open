@@ -22,9 +22,11 @@ describe('<Blog />', () => {
     }
 
     let container
+    const mockHandler = jest.fn()
 
     beforeEach(() => {
-        container = render(<Blog blog={blog} user={user}/>).container
+        jest.clearAllMocks()
+        container = render(<Blog blog={blog} user={user} updateBlog={mockHandler}/>).container
     })
 
     test('displays only blog title and author by default', () => {
@@ -35,14 +37,23 @@ describe('<Blog />', () => {
         expect(toggleContainer).toHaveStyle('display: none')
     })
 
-    test('show blog details when relevant button is clicked', async () => {
-        const user = userEvent.setup()
+    test('shows blog details when relevant button is clicked', async () => {
+        const userMock = userEvent.setup()
         const button = screen.getByText('view')
-        await user.click(button)
+        await userMock.click(button)
 
         const toggleContainer = container.querySelector('.toggleable')
         expect(toggleContainer).not.toHaveStyle('display: none')
         expect(toggleContainer.textContent).toContain('https://blog.linux.orglikes 2')
+    })
+
+    test('handles 2 clicks of the like button by calling the event handler twice', async () => {
+        const userMock = userEvent.setup()
+        const button = screen.getByText('like')
+        await userMock.click(button)
+        await userMock.click(button)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
     })
 })
 
