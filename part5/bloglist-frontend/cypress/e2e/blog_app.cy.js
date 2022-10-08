@@ -2,12 +2,20 @@ describe('Blog app', () => {
     beforeEach(() => {
         cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
-        const user = {
+        const userA = {
             name: 'Arnold Schwarzenegger',
             username: 'arnie',
             password: 'pump'
         }
-        cy.request('POST', 'http://localhost:3003/api/users', user)
+
+        const userB = {
+            name: 'Buster Bluth',
+            username: 'buster',
+            password: 'mom'
+        }
+
+        cy.createUser(userA)
+        cy.createUser(userB)
 
         cy.visit('http://localhost:3000')
     })
@@ -67,12 +75,26 @@ describe('Blog app', () => {
                 })
             })
 
-            it.only('can be liked', () => {
+            it('can be liked', () => {
                 cy.contains('Light weight baby').contains('view').click()
                 cy.contains('Light weight baby').contains('like').click()
                 cy.contains('Light weight baby').contains('like').click()
 
                 cy.contains('Light weight baby').contains('likes 2')
+            })
+
+            it('can be deleted by the creator', () => {
+                cy.contains('Light weight baby').contains('view').click()
+                cy.contains('Light weight baby').contains('delete').click()
+
+                cy.get('html').should('not.contain', 'Light weight baby')
+            })
+
+            it('cannot be deleted by another user than the creator', () => {
+                cy.login({ username: 'buster', password: 'mom' })
+                cy.contains('Light weight baby').contains('view').click()
+
+                cy.get('.blog button:visible').should('not.contain', 'delete')
             })
         })
     })
