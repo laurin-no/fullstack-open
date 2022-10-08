@@ -33,6 +33,6 @@
 | **Part 5**        | a         | 3.0h     |
 |                   | b         | 5.5h     |
 |                   | c         | 2.5h     |
-|                   | d         |          |
-|                   | **total** |          |
-| **Sum all parts** |           | **46h**  |
+|                   | d         | 5.0h     |
+|                   | **total** | **16h**  |
+| **Sum all parts** |           | **62h**  |
