@@ -40,4 +40,22 @@ describe('Blog app', () => {
                 .and('have.css', 'border-style', 'solid')
         })
     })
+
+    describe('When logged in', () => {
+        beforeEach(() => {
+            cy.login({ username: 'arnie', password: 'pump' })
+        })
+
+        it.only('A blog can be created', () => {
+            cy.contains('create new blog').click()
+            cy.get('input[name=Title]').type('Blog about building your body')
+            cy.get('input[name=Author]').type('Arnold the GOAT')
+            cy.get('input[name=Url]').type('https://blog.arnold.com/pumpingiron')
+
+            cy.get('button[type=Submit]').click()
+
+            cy.contains('Created new blog')
+            cy.contains('Blog about building your body')
+        })
+    })
 })
