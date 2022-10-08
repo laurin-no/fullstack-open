@@ -97,5 +97,36 @@ describe('Blog app', () => {
                 cy.get('.blog button:visible').should('not.contain', 'delete')
             })
         })
+
+        describe('and multiple blogs exist', () => {
+            beforeEach(() => {
+                cy.createBlog({
+                    title: 'The title with the most likes',
+                    author: 'Well liked author',
+                    url: 'good.blog.com'
+                })
+                cy.createBlog({
+                    title: 'The title with the second most likes',
+                    author: 'Not so well liked author',
+                    url: 'not.so.good.blog.com'
+                })
+            })
+
+            it('should be sorted by likes', () => {
+                cy.contains('The title with the second most likes').contains('view').click()
+                cy.contains('The title with the second most likes').contains('like').click()
+                cy.contains('The title with the second most likes').contains('like').click()
+
+                cy.contains('The title with the most likes').contains('view').click()
+                cy.contains('The title with the most likes').contains('like').click()
+                cy.contains('The title with the most likes').contains('like').click()
+                cy.contains('The title with the most likes').contains('like').click()
+
+                cy.wait(500)
+
+                cy.get('.blog').eq(0).should('contain', 'The title with the most likes')
+                cy.get('.blog').eq(1).should('contain', 'The title with the second most likes')
+            })
+        })
     })
 })
