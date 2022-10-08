@@ -46,7 +46,7 @@ describe('Blog app', () => {
             cy.login({ username: 'arnie', password: 'pump' })
         })
 
-        it.only('A blog can be created', () => {
+        it('A blog can be created', () => {
             cy.contains('create new blog').click()
             cy.get('input[name=Title]').type('Blog about building your body')
             cy.get('input[name=Author]').type('Arnold the GOAT')
@@ -56,6 +56,24 @@ describe('Blog app', () => {
 
             cy.contains('Created new blog')
             cy.contains('Blog about building your body')
+        })
+
+        describe('and a blog exists', () => {
+            beforeEach(() => {
+                cy.createBlog({
+                    title: 'Light weight baby',
+                    author: 'Ronnie Coleman',
+                    url: 'blog.lightweight.com/baby'
+                })
+            })
+
+            it.only('can be liked', () => {
+                cy.contains('Light weight baby').contains('view').click()
+                cy.contains('Light weight baby').contains('like').click()
+                cy.contains('Light weight baby').contains('like').click()
+
+                cy.contains('Light weight baby').contains('likes 2')
+            })
         })
     })
 })
