@@ -38,6 +38,6 @@
 | **Part 6**        | a         | 3.0h     |
 |                   | b         | 3.0h     |
 |                   | c         | 3.0h     |
-|                   | d         |          |
-|                   | **total** |          |
-| **Sum all parts** |           | **62h**  |
+|                   | d         | 2.0h     |
+|                   | **total** | **11h**  |
+| **Sum all parts** |           | **73h**  |
