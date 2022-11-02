@@ -6,6 +6,9 @@ import Notification from './components/Notification'
 import Error from './components/Error'
 import Toggleable from './components/Toggleable'
 import BlogForm from './components/BlogForm'
+import { useDispatch } from 'react-redux'
+import { setError } from './reducers/errorReducer'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -13,8 +16,7 @@ const App = () => {
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
-    const [notificationMessage, setNotificationMessage] = useState(null)
-    const [errorMessage, setErrorMessage] = useState(null)
+    const dispatch = useDispatch()
 
     const blogFormRef = useRef()
 
@@ -43,10 +45,7 @@ const App = () => {
             setUsername('')
             setPassword('')
         } catch (exception) {
-            setErrorMessage('Wrong credentials')
-            setTimeout(() => {
-                setErrorMessage(null)
-            }, 5000)
+            dispatch(setError('Wrong credentials', 5))
         }
     }
 
@@ -61,15 +60,9 @@ const App = () => {
             const blogRes = await blogService.create(blogObject)
             setBlogs((prevState) => [...prevState, blogRes])
 
-            setNotificationMessage('Created new blog')
-            setTimeout(() => {
-                setNotificationMessage(null)
-            }, 5000)
+            dispatch(setNotification('Created new blog', 5))
         } catch (e) {
-            setErrorMessage('Creation failed')
-            setTimeout(() => {
-                setErrorMessage(null)
-            }, 5000)
+            dispatch(setError('Creation failed', 5))
         }
     }
 
@@ -81,10 +74,7 @@ const App = () => {
                 prevState.map((b) => (b.id === blogRes.id ? blogRes : b))
             )
         } catch (e) {
-            setErrorMessage('Blog update failed')
-            setTimeout(() => {
-                setErrorMessage(null)
-            }, 5000)
+            dispatch(setError('Blog update failed', 5))
         }
     }
 
@@ -131,8 +121,8 @@ const App = () => {
         return (
             <div>
                 <h2>Log in to application</h2>
-                <Notification message={notificationMessage} />
-                <Error message={errorMessage} />
+                <Notification />
+                <Error />
                 {loginForm()}
             </div>
         )
@@ -141,8 +131,8 @@ const App = () => {
     return (
         <div>
             <h2>blogs</h2>
-            <Notification message={notificationMessage} />
-            <Error message={errorMessage} />
+            <Notification />
+            <Error />
 
             <p>
                 {user.name} logged in{' '}

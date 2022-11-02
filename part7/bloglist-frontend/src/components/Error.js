@@ -1,6 +1,8 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Error = ({ message }) => {
+const Error = () => {
+    const message = useSelector((state) => state.error)
     const notificationStyle = {
         color: 'red',
         background: 'lightgrey',
