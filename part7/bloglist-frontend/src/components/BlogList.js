@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './Blog'
-import blogService from '../services/blogs'
-import { setError } from '../reducers/errorReducer'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 
 const BlogList = () => {
     const dispatch = useDispatch()
@@ -9,25 +8,16 @@ const BlogList = () => {
         return [...blogs].sort((a, b) => b.likes - a.likes)
     })
 
-    const setBlogs = () => console.log('setBlogs is deprecated')
-    const user = {}
+    const user = useSelector((state) => state.user)
 
-    const updateBlog = async (blogObject) => {
-        try {
-            const blogRes = await blogService.update(blogObject)
-
-            setBlogs((prevState) =>
-                prevState.map((b) => (b.id === blogRes.id ? blogRes : b))
-            )
-        } catch (e) {
-            dispatch(setError('Blog update failed', 5))
-        }
+    const handleLike = async (blogObject, user) => {
+        const blog = { ...blogObject, user: user.id }
+        dispatch(likeBlog(blog))
     }
 
-    const deleteBlog = async (blog) => {
+    const handleDelete = async (blog) => {
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-            await blogService.deleteById(blog.id)
-            setBlogs((prevState) => prevState.filter((b) => b.id !== blog.id))
+            dispatch(deleteBlog(blog))
         }
     }
 
@@ -37,8 +27,8 @@ const BlogList = () => {
                 <Blog
                     key={blog.id}
                     blog={blog}
-                    updateBlog={updateBlog}
-                    deleteBlog={deleteBlog}
+                    handleLike={handleLike}
+                    handleDelete={handleDelete}
                     user={user}
                 />
             ))}
