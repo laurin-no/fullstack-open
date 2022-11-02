@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -8,10 +7,10 @@ import Toggleable from './components/Toggleable'
 import BlogForm from './components/BlogForm'
 import { useDispatch } from 'react-redux'
 import { setError } from './reducers/errorReducer'
-import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
 
 const App = () => {
-    const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
@@ -21,8 +20,8 @@ const App = () => {
     const blogFormRef = useRef()
 
     useEffect(() => {
-        blogService.getAll().then((blogs) => setBlogs(blogs))
-    }, [])
+        dispatch(initializeBlogs())
+    }, [dispatch])
 
     useEffect(() => {
         const loggedUserJson = window.localStorage.getItem('loggedUser')
@@ -54,37 +53,6 @@ const App = () => {
         setUser(null)
     }
 
-    const createBlog = async (blogObject) => {
-        blogFormRef.current.toggleVisibility()
-        try {
-            const blogRes = await blogService.create(blogObject)
-            setBlogs((prevState) => [...prevState, blogRes])
-
-            dispatch(setNotification('Created new blog', 5))
-        } catch (e) {
-            dispatch(setError('Creation failed', 5))
-        }
-    }
-
-    const updateBlog = async (blogObject) => {
-        try {
-            const blogRes = await blogService.update(blogObject)
-
-            setBlogs((prevState) =>
-                prevState.map((b) => (b.id === blogRes.id ? blogRes : b))
-            )
-        } catch (e) {
-            dispatch(setError('Blog update failed', 5))
-        }
-    }
-
-    const deleteBlog = async (blog) => {
-        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-            await blogService.deleteById(blog.id)
-            setBlogs((prevState) => prevState.filter((b) => b.id !== blog.id))
-        }
-    }
-
     const loginForm = () => {
         return (
             <form onSubmit={handleLogin}>
@@ -111,12 +79,6 @@ const App = () => {
         )
     }
 
-    const blogForm = () => (
-        <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
-        </Toggleable>
-    )
-
     if (user === null) {
         return (
             <div>
@@ -139,21 +101,10 @@ const App = () => {
                 <button onClick={handleLogout}>logout</button>
             </p>
 
-            <h2>create new</h2>
-
-            {blogForm()}
-
-            {blogs
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                    <Blog
-                        key={blog.id}
-                        blog={blog}
-                        updateBlog={updateBlog}
-                        deleteBlog={deleteBlog}
-                        user={user}
-                    />
-                ))}
+            <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
+                <BlogForm innerRef={blogFormRef} />
+            </Toggleable>
+            <BlogList />
         </div>
     )
 }
