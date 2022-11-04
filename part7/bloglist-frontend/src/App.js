@@ -10,6 +10,8 @@ import { setError } from './reducers/errorReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import { setUser } from './reducers/userReducer'
+import { Route, Routes } from 'react-router-dom'
+import UserList from './components/UserList'
 
 const App = () => {
     const [username, setUsername] = useState('')
@@ -53,6 +55,15 @@ const App = () => {
         window.localStorage.removeItem('loggedUser')
         dispatch(setUser(null))
     }
+
+    const home = (
+        <>
+            <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
+                <BlogForm innerRef={blogFormRef} />
+            </Toggleable>
+            <BlogList />
+        </>
+    )
 
     const loginForm = () => {
         return (
@@ -102,10 +113,10 @@ const App = () => {
                 <button onClick={handleLogout}>logout</button>
             </p>
 
-            <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
-                <BlogForm innerRef={blogFormRef} />
-            </Toggleable>
-            <BlogList />
+            <Routes>
+                <Route path="/" element={home} />
+                <Route path="/users" element={<UserList />} />
+            </Routes>
         </div>
     )
 }
