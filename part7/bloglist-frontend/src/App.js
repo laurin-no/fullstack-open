@@ -10,8 +10,10 @@ import { setError } from './reducers/errorReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import { setUser } from './reducers/userReducer'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useMatch } from 'react-router-dom'
 import UserList from './components/UserList'
+import { initializeUsers } from './reducers/usersReducer'
+import User from './components/User'
 
 const App = () => {
     const [username, setUsername] = useState('')
@@ -34,6 +36,19 @@ const App = () => {
             blogService.setToken(user.token)
         }
     }, [])
+
+    useEffect(() => {
+        dispatch(initializeUsers())
+    }, [dispatch])
+
+    const users = useSelector(({ users }) => {
+        return [...users].sort((a, b) => b.blogs.length - a.blogs.length)
+    })
+
+    const userMatch = useMatch('/users/:id')
+    const matchedUser = userMatch
+        ? users.find((u) => u.id === userMatch.params.id)
+        : null
 
     const handleLogin = async (event) => {
         event.preventDefault()
@@ -115,7 +130,11 @@ const App = () => {
 
             <Routes>
                 <Route path="/" element={home} />
-                <Route path="/users" element={<UserList />} />
+                <Route path="/users" element={<UserList users={users} />} />
+                <Route
+                    path="/users/:id"
+                    element={<User user={matchedUser} />}
+                />
             </Routes>
         </div>
     )
