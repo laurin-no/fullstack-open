@@ -127,9 +127,8 @@ const App = () => {
     }
 
     return (
-        <div>
+        <div className="container">
             <Menu username={user.name} handleLogout={handleLogout} />
-            <h2>blogs</h2>
             <Notification />
             <Error />
 
