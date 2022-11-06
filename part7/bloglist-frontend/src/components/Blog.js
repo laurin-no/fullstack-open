@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { addComment, deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { useState } from 'react'
+import { setError } from '../reducers/errorReducer'
 
 const Blog = ({ blog }) => {
     const dispatch = useDispatch()
 
     const user = useSelector((state) => state.user)
+
+    const [comment, setComment] = useState('')
 
     const handleLike = async (blogObject, user) => {
         const blog = { ...blogObject, user: user.id }
@@ -25,6 +29,18 @@ const Blog = ({ blog }) => {
         display: blog.user.username === user.username ? '' : 'none',
     }
 
+    const handleCommentSubmit = async (event) => {
+        event.preventDefault()
+
+        try {
+            dispatch(addComment(blog.id, comment))
+        } catch (e) {
+            dispatch(setError('Adding of comment failed', 5))
+        }
+
+        setComment('')
+    }
+
     return (
         <div>
             <h2>
@@ -43,6 +59,15 @@ const Blog = ({ blog }) => {
                 delete
             </button>
             <h3>comments</h3>
+            <form onSubmit={handleCommentSubmit}>
+                <input
+                    type="text"
+                    value={comment}
+                    name="Comment"
+                    onChange={({ target }) => setComment(target.value)}
+                />
+                <button type="submit">add comment</button>
+            </form>
             <ul>
                 {blog.comments.map((comment, index) => (
                     <li key={index}>{comment}</li>
