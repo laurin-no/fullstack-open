@@ -15,6 +15,7 @@ import UserList from './components/UserList'
 import { initializeUsers } from './reducers/usersReducer'
 import User from './components/User'
 import Blog from './components/Blog'
+import Menu from './components/Menu'
 
 const App = () => {
     const [username, setUsername] = useState('')
@@ -127,14 +128,10 @@ const App = () => {
 
     return (
         <div>
+            <Menu username={user.name} handleLogout={handleLogout} />
             <h2>blogs</h2>
             <Notification />
             <Error />
-
-            <p>
-                {user.name} logged in{' '}
-                <button onClick={handleLogout}>logout</button>
-            </p>
 
             <Routes>
                 <Route path="/" element={home} />
