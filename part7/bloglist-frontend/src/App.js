@@ -14,6 +14,7 @@ import { Route, Routes, useMatch } from 'react-router-dom'
 import UserList from './components/UserList'
 import { initializeUsers } from './reducers/usersReducer'
 import User from './components/User'
+import Blog from './components/Blog'
 
 const App = () => {
     const [username, setUsername] = useState('')
@@ -45,9 +46,16 @@ const App = () => {
         return [...users].sort((a, b) => b.blogs.length - a.blogs.length)
     })
 
+    const blogs = useSelector((state) => state.blogs)
+
     const userMatch = useMatch('/users/:id')
     const matchedUser = userMatch
         ? users.find((u) => u.id === userMatch.params.id)
+        : null
+
+    const blogMatch = useMatch('/blogs/:id')
+    const matchedBlog = blogMatch
+        ? blogs.find((b) => b.id === blogMatch.params.id)
         : null
 
     const handleLogin = async (event) => {
@@ -134,6 +142,10 @@ const App = () => {
                 <Route
                     path="/users/:id"
                     element={<User user={matchedUser} />}
+                />
+                <Route
+                    path="/blogs/:id"
+                    element={<Blog blog={matchedBlog} />}
                 />
             </Routes>
         </div>

@@ -1,36 +1,27 @@
-import { useDispatch, useSelector } from 'react-redux'
-import Blog from './Blog'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const BlogList = () => {
-    const dispatch = useDispatch()
+    const blogStyle = {
+        paddingTop: 10,
+        paddingLeft: 2,
+        border: 'solid',
+        borderWidth: 1,
+        marginBottom: 5,
+    }
+
     const blogs = useSelector(({ blogs }) => {
         return [...blogs].sort((a, b) => b.likes - a.likes)
     })
 
-    const user = useSelector((state) => state.user)
-
-    const handleLike = async (blogObject, user) => {
-        const blog = { ...blogObject, user: user.id }
-        dispatch(likeBlog(blog))
-    }
-
-    const handleDelete = async (blog) => {
-        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-            dispatch(deleteBlog(blog))
-        }
-    }
-
     return (
         <div>
             {blogs.map((blog) => (
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    handleLike={handleLike}
-                    handleDelete={handleDelete}
-                    user={user}
-                />
+                <div key={blog.id} style={blogStyle} className="blog">
+                    <Link to={`/blogs/${blog.id}`}>
+                        {blog.title} {blog.author}
+                    </Link>
+                </div>
             ))}
         </div>
     )
