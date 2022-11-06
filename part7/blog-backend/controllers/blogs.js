@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const { request, response } = require('express')
 
 router.get('/', async (request, response) => {
     const notes = await Blog.find({})
@@ -59,6 +60,20 @@ router.put('/:id', async (request, response) => {
     }).populate('user', { username: 1, name: 1 })
 
     response.json(updatedBlog)
+})
+
+router.post('/:id/comments', async (request, response) => {
+    const comment = request.body.comment
+
+    const updated = await Blog.findByIdAndUpdate(
+        request.params.id,
+        {
+            $push: { comments: comment },
+        },
+        { new: true }
+    ).populate('user', { username: 1, name: 1 })
+
+    response.json(updated)
 })
 
 module.exports = router

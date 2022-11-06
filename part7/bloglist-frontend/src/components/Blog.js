@@ -42,6 +42,12 @@ const Blog = ({ blog }) => {
             <button onClick={() => handleDelete(blog)} style={showDelete}>
                 delete
             </button>
+            <h3>comments</h3>
+            <ul>
+                {blog.comments.map((comment, index) => (
+                    <li key={index}>{comment}</li>
+                ))}
+            </ul>
         </div>
     )
 }
