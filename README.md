@@ -1,8 +1,9 @@
 # FullStack Open Solutions
 
+https://fullstackopen.com/en/
+
 **Name:** Laurin Novak  
 **School:** JAMK  
-**Student Email:** ab0330@student.jamk.fi
 
 ## Timesheet
 
