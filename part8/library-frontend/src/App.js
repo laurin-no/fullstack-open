@@ -63,7 +63,7 @@ const App = () => {
 
             <Recommendations
                 show={page === 'recommendations'}
-                genre={user.favouriteGenre}
+                genre={user?.favouriteGenre}
             />
         </div>
     )

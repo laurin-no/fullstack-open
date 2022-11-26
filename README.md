@@ -51,7 +51,7 @@ https://fullstackopen.com/en/
 | **Part 8**        | a         | 1.5h     |
 |                   | b         | 1.5h     |
 |                   | c         | 4.0h     |
-|                   | d         |          |
+|                   | d         | 5.0h     |
 |                   | e         |          |
 |                   | **total** |          |
 | **Sum all parts** |           | **91h**  |
