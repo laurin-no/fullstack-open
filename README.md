@@ -50,7 +50,7 @@ https://fullstackopen.com/en/
 |                   | **total** | **18h**  |
 | **Part 8**        | a         | 1.5h     |
 |                   | b         | 1.5h     |
-|                   | c         |          |
+|                   | c         | 4.0h     |
 |                   | d         |          |
 |                   | e         |          |
 |                   | **total** |          |
