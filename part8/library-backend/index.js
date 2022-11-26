@@ -1,5 +1,5 @@
 const config = require('./utils/config')
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const mongoose = require('mongoose')
 const Author = require('./models/author')
 const Book = require('./models/book')
@@ -65,13 +65,25 @@ const resolvers = {
 
             const createAuthor = async (name) => {
                 const authorToSave = new Author({ name })
-                return await authorToSave.save()
+                try {
+                    return await authorToSave.save()
+                } catch (e) {
+                    throw new UserInputError(e.message, {
+                        invalidArgs: args,
+                    })
+                }
             }
 
             const author = maybeAuthor ?? (await createAuthor(args.author))
 
             const book = new Book({ ...args, author })
-            return book.save()
+            try {
+                return book.save()
+            } catch (e) {
+                throw new UserInputError(e.message, {
+                    invalidArgs: args,
+                })
+            }
         },
         editAuthor: async (root, args) => {
             const author = await Author.findOne({ name: args.name })
@@ -81,7 +93,13 @@ const resolvers = {
             }
 
             author.born = args.setBornTo
-            return author.save()
+            try {
+                return author.save()
+            } catch (e) {
+                throw new UserInputError(e.message, {
+                    invalidArgs: args,
+                })
+            }
         },
     },
 }
