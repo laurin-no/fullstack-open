@@ -1,10 +1,18 @@
 import AuthorEditForm from './AuthorEditForm'
+import { useQuery } from '@apollo/client'
+import { ALL_AUTHORS } from '../queries'
 
-const Authors = (props) => {
-    if (!props.show) {
+const Authors = ({ show }) => {
+    const result = useQuery(ALL_AUTHORS)
+
+    if (result.loading) {
+        return <div>loading...</div>
+    }
+
+    if (!show) {
         return null
     }
-    const authors = props.authors
+    const authors = result.data.allAuthors
 
     return (
         <div>
