@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import { useApolloClient, useLazyQuery } from '@apollo/client'
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client'
 import LoginForm from './components/LoginForm'
-import { CURRENT_USER } from './queries'
+import { BOOK_ADDED, CURRENT_USER } from './queries'
 import Recommendations from './components/Recommendations'
 
 const App = () => {
@@ -23,6 +23,12 @@ const App = () => {
         }
         getCurrentUser()
     }, [token])
+
+    useSubscription(BOOK_ADDED, {
+        onData: ({ data }) => {
+            window.alert(`book with tile ${data.data.bookAdded.title} created`)
+        },
+    })
 
     const logout = () => {
         setToken(null)
