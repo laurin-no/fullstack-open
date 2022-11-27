@@ -20,7 +20,7 @@ const resolvers = {
     },
     Author: {
         bookCount: async (root) => {
-            return Book.countDocuments({ author: root })
+            return root.books.length
         },
     },
     Mutation: {
@@ -36,6 +36,10 @@ const resolvers = {
 
                 const book = new Book({ ...args, author })
                 await book.save()
+
+                const authorToUpdate = await Author.findById(book.author)
+                authorToUpdate.books = authorToUpdate.books.concat(book)
+                authorToUpdate.save()
 
                 pubsub.publish('BOOK_ADDED', { bookAdded: book })
 

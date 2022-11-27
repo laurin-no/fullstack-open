@@ -52,6 +52,6 @@ https://fullstackopen.com/en/
 |                   | b         | 1.5h     |
 |                   | c         | 4.0h     |
 |                   | d         | 5.0h     |
-|                   | e         |          |
-|                   | **total** |          |
-| **Sum all parts** |           | **91h**  |
+|                   | e         | 5.0h     |
+|                   | **total** | **17h**  |
+| **Sum all parts** |           | **108h** |

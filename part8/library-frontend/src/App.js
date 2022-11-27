@@ -37,9 +37,13 @@ const App = () => {
             bookAdded.genres.forEach((genre) => {
                 client.cache.updateQuery(
                     { query: ALL_BOOKS, variables: { genre } },
-                    ({ allBooks }) => {
+                    (cacheData) => {
+                        if (!cacheData) {
+                            return null
+                        }
+
                         return {
-                            allBooks: allBooks.concat(bookAdded),
+                            allBooks: cacheData.allBooks.concat(bookAdded),
                         }
                     }
                 )
