@@ -4,7 +4,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client'
 import LoginForm from './components/LoginForm'
-import { BOOK_ADDED, CURRENT_USER } from './queries'
+import { ALL_BOOKS, BOOK_ADDED, CURRENT_USER } from './queries'
 import Recommendations from './components/Recommendations'
 
 const App = () => {
@@ -26,7 +26,24 @@ const App = () => {
 
     useSubscription(BOOK_ADDED, {
         onData: ({ data }) => {
-            window.alert(`book with tile ${data.data.bookAdded.title} created`)
+            const bookAdded = data.data.bookAdded
+
+            client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+                return {
+                    allBooks: allBooks.concat(bookAdded),
+                }
+            })
+
+            bookAdded.genres.forEach((genre) => {
+                client.cache.updateQuery(
+                    { query: ALL_BOOKS, variables: { genre } },
+                    ({ allBooks }) => {
+                        return {
+                            allBooks: allBooks.concat(bookAdded),
+                        }
+                    }
+                )
+            })
         },
     })
 

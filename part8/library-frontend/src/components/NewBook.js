@@ -9,11 +9,7 @@ const NewBook = (props) => {
     const [genre, setGenre] = useState('')
     const [genres, setGenres] = useState([])
 
-    const [createBook, { client }] = useMutation(CREATE_BOOK, {
-        update(cache, response) {
-            client.resetStore()
-        },
-    })
+    const [createBook] = useMutation(CREATE_BOOK)
 
     if (!props.show) {
         return null
