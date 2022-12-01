@@ -8,6 +8,30 @@ interface ExerciseResult {
     average: number
 }
 
+interface ArgumentValues {
+    target: number
+    trainingData: number[]
+}
+
+const parseArguments = (args: Array<string>): ArgumentValues => {
+    if (args.length < 4) throw new Error('Not enough arguments')
+
+    const targetString = args[2]
+    const trainingDataStrings = args.slice(3)
+
+    const targetNum = Number(targetString)
+    const trainingDataNum = trainingDataStrings.map(d => Number(d))
+
+    if (!isNaN(targetNum) && trainingDataNum.filter(d => isNaN(d)).length === 0) {
+        return {
+            target: targetNum,
+            trainingData: trainingDataNum
+        }
+    } else {
+        throw new Error('Provided values were not numbers')
+    }
+}
+
 const calculateExercises = (trainingData: number[], target: number): ExerciseResult => {
 
     const average = trainingData.reduce((sum, current) => sum + current, 0) / trainingData.length
@@ -26,4 +50,14 @@ const calculateExercises = (trainingData: number[], target: number): ExerciseRes
     }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const { target, trainingData } = parseArguments(process.argv)
+    console.log(calculateExercises(trainingData, target))
+} catch (error: unknown) {
+    let errorMessage = 'Something bad happened'
+    if (error instanceof Error) {
+        errorMessage += ` Error: ${error.message}`
+    }
+
+    console.log(errorMessage)
+}
