@@ -3,7 +3,7 @@
 https://fullstackopen.com/en/
 
 **Name:** Laurin Novak  
-**School:** JAMK  
+**School:** JAMK
 
 ## Timesheet
 
@@ -54,4 +54,9 @@ https://fullstackopen.com/en/
 |                   | d         | 5.0h     |
 |                   | e         | 5.0h     |
 |                   | **total** | **17h**  |
+| **Part 9**        | a         | 1.0h     |
+|                   | b         | 3.5h     |
+|                   | c         |          |
+|                   | d         |          |
+|                   | **total** |          |
 | **Sum all parts** |           | **108h** |

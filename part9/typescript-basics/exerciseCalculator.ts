@@ -32,7 +32,7 @@ const parseArguments = (args: Array<string>): ArgumentValues => {
     }
 };
 
-const calculateExercises = (trainingData: number[], target: number): ExerciseResult => {
+export const calculateExercises = (trainingData: number[], target: number): ExerciseResult => {
 
     const average = trainingData.reduce((sum, current) => sum + current, 0) / trainingData.length;
     const success = average > target;
