@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import diagonsesRouter from './src/routes/diagonses';
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,8 @@ app.get('/api/ping', (_req, res) => {
     console.log('someone pinged');
     res.send('pong');
 });
+
+app.use('/api/diagnoses', diagonsesRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
