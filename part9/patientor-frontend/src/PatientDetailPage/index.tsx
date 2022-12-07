@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useStateValue } from '../state';
+import { setPatientDetails, useStateValue } from '../state';
 import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 
@@ -17,7 +17,7 @@ const PatientDetailPage = () => {
         const fetchPatientDetails = async (id: string) => {
             const { data: patientDetails } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
             setPatient(patientDetails);
-            dispatch({ type: 'SET_PATIENT_DETAILS', payload: patientDetails });
+            dispatch(setPatientDetails(patientDetails));
         };
 
         if (!maybePatient?.ssn && id) {
