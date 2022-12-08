@@ -6,7 +6,7 @@ import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 
 const PatientDetailPage = () => {
-    const [{ patients }, dispatch] = useStateValue();
+    const [{ patients, diagnoses }, dispatch] = useStateValue();
     const { id } = useParams<{ id: string }>();
 
     const [patient, setPatient] = useState<Patient>();
@@ -27,6 +27,10 @@ const PatientDetailPage = () => {
         }
     }, [dispatch]);
 
+    const findDiagnosis = (code: string) => {
+        return Object.values(diagnoses).find(d => d.code === code);
+    };
+
     if (!patient) {
         return <div>loading...</div>;
     }
@@ -43,7 +47,7 @@ const PatientDetailPage = () => {
                         <p>{entry.description}</p>
                         <ul>
                             {entry.diagnosisCodes?.map(code => (
-                                <li key={code}>{code}</li>
+                                <li key={code}>{code} {findDiagnosis(code)?.name}</li>
                             ))}
                         </ul>
                     </div>
