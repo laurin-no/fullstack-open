@@ -37,6 +37,18 @@ const PatientDetailPage = () => {
             gender: {patient.gender}<br />
             ssn: {patient.ssn}<br />
             occupation: {patient.occupation}<br />
+            <h3>entries</h3>
+            {patient.entries.map(entry => (
+                    <div key={entry.id}>
+                        <p>{entry.description}</p>
+                        <ul>
+                            {entry.diagnosisCodes?.map(code => (
+                                <li key={code}>{code}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )
+            )}
         </div>
     );
 };
