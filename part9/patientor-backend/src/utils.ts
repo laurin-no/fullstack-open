@@ -1,13 +1,4 @@
-//     {
-//         'id': 'd2773336-f723-11e9-8f0b-362b9e155667',
-//         'name': 'John McClane',
-//         'dateOfBirth': '1986-07-09',
-//         'ssn': '090786-122X',
-//         'gender': 'male',
-//         'occupation': 'New york city cop'
-//     },
-
-import { Gender, NewPatient } from './types';
+import { Discharge, EntryWithoutId, Gender, HealthCheckRating, NewPatient, SickLeave } from './types';
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -41,6 +32,7 @@ const parseSsn = (ssn: unknown): string => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (param: any): param is Gender => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return Object.values(Gender).includes(param);
 };
 
@@ -58,7 +50,7 @@ const parseOccupation = (occupation: unknown): string => {
     return occupation;
 };
 
-type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown };
+export type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown };
 
 const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): NewPatient => {
     return {
@@ -71,4 +63,138 @@ const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): N
     };
 };
 
-export default toNewPatient;
+const parseType = (type: unknown): string => {
+    const allowedTypes = ['Hospital', 'OccupationalHealthcare', 'HealthCheck'];
+
+    if (!type || !isString(type) || !allowedTypes.includes(type)) {
+        throw new Error('Incorrect or missing type.');
+    }
+    return type;
+};
+
+const parseString = (input: unknown): string => {
+    if (!input || !isString(input)) {
+        throw new Error('Incorrect or missing input.');
+    }
+    return input;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isStringArray = (param: any[]): param is string[] => {
+    return param.every(i => isString(i));
+};
+
+const parseDiagnosisCodes = (diagnosisCodes: unknown): string[] | undefined => {
+    if (!diagnosisCodes) {
+        return undefined;
+    } else if (!Array.isArray(diagnosisCodes) || !isStringArray(diagnosisCodes)) {
+        throw new Error('Incorrect diagnosis codes');
+    }
+    return diagnosisCodes;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isDischarge = (param: any): param is Discharge => {
+    const maybeDischarge = param as Discharge;
+    return isDate(maybeDischarge.date) && isString(maybeDischarge.criteria);
+};
+
+const parseDischarge = (discharge: unknown): Discharge => {
+    if (!discharge || !isDischarge(discharge)) {
+        throw new Error('Missing or incorrect discharge object.');
+    }
+    return discharge;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isSickLeave = (param: any): param is SickLeave => {
+    const maybeSickLeave = param as SickLeave;
+    return isDate(maybeSickLeave.startDate) && isDate(maybeSickLeave.endDate);
+};
+
+const parseSickLeave = (sickLeave: unknown): SickLeave | undefined => {
+    if (!sickLeave) {
+        return undefined;
+    } else if (!isSickLeave(sickLeave)) {
+        throw new Error('Incorrect sick leave.');
+    }
+    return sickLeave;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isHealthCheckRating = (param: any): param is HealthCheckRating => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return Object.values(HealthCheckRating).includes(param);
+};
+
+const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
+    if (!rating || !isHealthCheckRating(rating)) {
+        throw new Error('Missing or incorrect rating');
+    }
+    return rating;
+};
+
+const assertNever = (value: unknown): never => {
+    throw new Error(
+        `Unhandled discriminated union member: ${value}`
+    );
+};
+
+export type EntryFields = {
+    type: unknown,
+    description: unknown,
+    date: unknown,
+    specialist: unknown,
+    diagnosisCodes: unknown,
+    discharge: unknown,
+    employerName: unknown,
+    sickLeave: unknown,
+    healthCheckRating: unknown
+};
+
+const toNewEntry = ({
+                        type,
+                        description,
+                        date,
+                        specialist,
+                        diagnosisCodes,
+                        discharge,
+                        employerName,
+                        sickLeave,
+                        healthCheckRating
+                    }: EntryFields): EntryWithoutId => {
+    const typeParsed = parseType(type);
+
+    const baseEntry = {
+        description: parseString(description),
+        date: parseDate(date),
+        specialist: parseName(specialist),
+        diagnosisCodes: parseDiagnosisCodes(diagnosisCodes)
+    };
+
+    switch (typeParsed) {
+        case 'Hospital':
+            return {
+                type: typeParsed,
+                discharge: parseDischarge(discharge),
+                ...baseEntry
+            };
+        case 'OccupationalHealthcare':
+            return {
+                type: typeParsed,
+                employerName: parseName(employerName),
+                sickLeave: parseSickLeave(sickLeave),
+                ...baseEntry
+            };
+        case 'HealthCheck':
+            return {
+                type: typeParsed,
+                healthCheckRating: parseHealthCheckRating(healthCheckRating),
+                ...baseEntry
+            };
+        default:
+            return assertNever(type);
+    }
+};
+
+export { toNewPatient, toNewEntry };
