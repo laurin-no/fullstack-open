@@ -1,24 +1,24 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogTitle, Divider } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import AddPatientForm, { PatientFormValues } from './AddPatientForm';
+import AddHospitalEntryForm, { HospitalEntryFormValues } from './AddHospitalEntryForm';
 
 interface Props {
     modalOpen: boolean;
     onClose: () => void;
-    onSubmit: (values: PatientFormValues) => void;
+    onSubmit: (values: HospitalEntryFormValues) => void;
     error?: string;
 }
 
-const AddPatientModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
+const AddHospitalEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
     <Dialog fullWidth={true} open={modalOpen} onClose={() => onClose()}>
-        <DialogTitle>Add a new patient</DialogTitle>
+        <DialogTitle>Add new hospital entry</DialogTitle>
         <Divider />
         <DialogContent>
             {error && <Alert severity='error'>{`Error: ${error}`}</Alert>}
-            <AddPatientForm onSubmit={onSubmit} onCancel={onClose} />
+            <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} />
         </DialogContent>
     </Dialog>
 );
 
-export default AddPatientModal;
+export default AddHospitalEntryModal;

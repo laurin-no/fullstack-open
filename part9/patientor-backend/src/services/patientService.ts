@@ -27,7 +27,7 @@ const addPatient = (patient: NewPatient): Patient => {
 const addEntry = (patientId: string, entry: EntryWithoutId): Entry => {
     const maybePatientIndex = patients.findIndex(p => p.id === patientId);
 
-    if (!maybePatientIndex) {
+    if (maybePatientIndex === -1) {
         throw new Error('Patient not found.');
     }
 
